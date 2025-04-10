@@ -1,16 +1,29 @@
-pyrofork
-motor
-TgCrypto
-flask
-gunicorn
-Dnspython
-https://devgagan.in/wp-content/uploads/2023/12/gagantelethon.zip
-cryptg
-tgcrypto
-Pyrogram==2.0.93
-psutil
-opencv-python-headless
-python-decouple
-requests
-speedtest-cli
-pymongo
+# Core Telegram API libraries
+pyrogram>=2.0.106          # Updated from 2.0.93 for latest features and bug fixes
+pyrofork>=2.0.106          # Fork of Pyrogram, kept for compatibility if used
+tgcrypto>=1.2.5            # Encryption for Pyrogram (replaces TgCrypto and cryptg)
+cryptg>=0.4.0              # Additional encryption support (kept from old list)
+
+# Database and async I/O
+motor>=3.4.0               # Async MongoDB driver (updated for modern asyncio)
+pymongo>=4.6.3             # Sync MongoDB driver (kept for db operations)
+dnspython>=2.6.1           # DNS resolution for MongoDB connections (updated)
+
+# Web and deployment
+flask>=3.0.3               # Web framework (if used for a web interface)
+gunicorn>=22.0.0           # WSGI server for deployment (updated)
+
+# Utilities and system monitoring
+psutil>=5.9.8              # System resource monitoring (updated)
+python-decouple>=3.8       # Environment variable management (updated from python-decouple)
+requests>=2.31.0           # HTTP requests (updated)
+speedtest-cli>=2.1.3       # Network speed testing (updated)
+
+# Media processing
+opencv-python-headless>=4.9.0  # Image/video processing (updated, headless for server use)
+
+# Custom dependency (Telethon fork by Gagan)
+https://devgagan.in/wp-content/uploads/2023/12/gagantelethon.zip  # Kept as-is, assumed still needed
+
+# Logging (implicitly used, no additional install needed)
+# logging  # Built-in, no need to list
