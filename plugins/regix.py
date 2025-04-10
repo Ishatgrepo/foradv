@@ -23,37 +23,42 @@ TEXT = Translation.TEXT
 async def pub_(bot, message):
     user = message.from_user.id
     temp.CANCEL[user] = False
-    frwd_id = message.data.split("_")[2]  # Format: user_id-bot_id-skipno_id
+    frwd_id = message.data.split("_")[2]
     sts = STS(frwd_id)
     
-    # Verify the task is valid
+    logger.info(f"Starting forwarding for user {user} with forward_id {frwd_id}")
+    
     if not sts.verify():
+        logger.warning(f"Invalid forward_id {frwd_id} for user {user}")
         await message.answer("You are clicking on an old button", show_alert=True)
         return await message.message.delete()
     
     i = sts.get(full=True)
-    # Check if the target chat is already in use by another task
     if i.TO in temp.IS_FRWD_CHAT:
+        logger.info(f"Target chat {i.TO} is already in use for user {user}")
         return await message.answer("A task is already in progress in the target chat. Please wait until it completes.", show_alert=True)
     
     m = await msg_edit(message.message, "<code>Verifying your data, please wait...</code>")
     
-    # Get the selected bot using bot_id from STS
     bot_id = i.bot_id
+    logger.info(f"Fetching bot with ID {bot_id} for user {user}")
     _bot = await db.get_bot(user, bot_id)
     if not _bot:
+        logger.error(f"Bot with ID {bot_id} not found for user {user}")
         await msg_edit(m, "<code>The selected bot was not found. Please add it using /settings!</code>", wait=True)
         return
     
-    # Retrieve forwarding settings
+    logger.info(f"Retrieving forwarding settings for user {user}")
     caption, forward_tag, data, protect, button = await sts.get_data(user)
     
-    # Start the bot client
+    logger.info(f"Starting bot client for bot {_bot['username']} (ID: {_bot['id']})")
     try:
         client = await start_clone_bot(CLIENT.client(_bot))
     except Exception as e:
+        logger.error(f"Failed to start bot client for {_bot['username']}: {e}")
         await m.edit(f"Error starting bot: {e}")
         return
+    
     
     await msg_edit(m, "<code>Processing...</code>")
     
