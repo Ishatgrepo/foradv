@@ -113,19 +113,42 @@ class Database:
         return default 
        
     async def add_bot(self, datas):
-       if not await self.is_bot_exist(datas['user_id']):
-          await self.bot.insert_one(datas)
-    
-    async def remove_bot(self, user_id):
-       await self.bot.delete_many({'user_id': int(user_id)})
-      
-    async def get_bot(self, user_id: int):
-       bot = await self.bot.find_one({'user_id': user_id})
-       return bot if bot else None
-                                          
-    async def is_bot_exist(self, user_id):
-       bot = await self.bot.find_one({'user_id': user_id})
-       return bool(bot)
+        user_bots = await self.bot.find_one({'user_id': datas['user_id']})
+        if user_bots:
+            # Check if bot with same ID already exists
+            if any(bot['id'] == datas['id'] for bot in user_bots['bots']):
+                return False  # Bot already exists
+            await self.bot.update_one(
+                {'user_id': datas['user_id']},
+                {'$push': {'bots': datas}}
+            )
+        else:
+            await self.bot.insert_one({'user_id': datas['user_id'], 'bots': [datas]})
+        return True
+
+    async def get_bots(self, user_id: int):
+        user_bots = await self.bot.find_one({'user_id': user_id})
+        return user_bots['bots'] if user_bots and user_bots.get('bots') else []
+
+    async def get_bot(self, user_id: int, bot_id: int):
+        user_bots = await self.bot.find_one({'user_id': user_id})
+        if user_bots and user_bots.get('bots'):
+            return next((bot for bot in user_bots['bots'] if bot['id'] == bot_id), None)
+        return None
+
+    async def remove_bot(self, user_id, bot_id):
+        await self.bot.update_one(
+            {'user_id': user_id},
+            {'$pull': {'bots': {'id': bot_id}}}
+        )
+
+    async def is_bot_exist(self, user_id, bot_id=None):
+        user_bots = await self.bot.find_one({'user_id': user_id})
+        if not user_bots or not user_bots.get('bots'):
+            return False
+        if bot_id:
+            return any(bot['id'] == bot_id for bot in user_bots['bots'])
+        return True
                                           
     async def in_channel(self, user_id: int, chat_id: int) -> bool:
        channel = await self.chl.find_one({"user_id": int(user_id), "chat_id": int(chat_id)})
