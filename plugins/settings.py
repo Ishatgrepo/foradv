@@ -21,12 +21,12 @@ async def settings_query(bot, query):
   i, type = query.data.split("#")
   buttons = [[InlineKeyboardButton('↩ Back', callback_data="settings#main")]]
   
-  if type=="main":
+  if type == "main":
      await query.message.edit_text(
        "<b>change your settings as your wish</b>",
        reply_markup=main_buttons())
        
-elif type=="bots":
+elif type == "bots":
     buttons = [] 
     bots = await db.get_bots(user_id)
     for bot in bots:
@@ -60,7 +60,7 @@ elif type=="bots":
             "<b>Bot successfully removed</b>",
             reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('↩ Back', callback_data="settings#bots")]]))
   
-  elif type=="addbot":
+  elif type == "addbot":
      await query.message.delete()
      bot = await CLIENT.add_bot(bot, query)
      if bot != True: return
@@ -68,7 +68,7 @@ elif type=="bots":
         "<b>bot token successfully added to db</b>",
         reply_markup=InlineKeyboardMarkup(buttons))
   
-  elif type=="adduserbot":
+  elif type == "adduserbot":
      await query.message.delete()
      user = await CLIENT.add_session(bot, query)
      if user != True: return
@@ -76,7 +76,7 @@ elif type=="bots":
         "<b>session successfully added to db</b>",
         reply_markup=InlineKeyboardMarkup(buttons))
       
-  elif type=="channels":
+  elif type == "channels":
      buttons = []
      channels = await db.get_user_channels(user_id)
      for channel in channels:
@@ -90,12 +90,12 @@ elif type=="bots":
        "<b><u>My Channels</b></u>\n\n<b>you can manage your target chats in here</b>",
        reply_markup=InlineKeyboardMarkup(buttons))
    
-  elif type=="addchannel":  
+  elif type == "addchannel":  
      await query.message.delete()
      try:
          text = await bot.send_message(user_id, "<b>❪ SET TARGET CHAT ❫\n\nForward a message from Your target chat\n/cancel - cancel this process</b>")
          chat_ids = await bot.listen(chat_id=user_id, timeout=300)
-         if chat_ids.text=="/cancel":
+         if chat_ids.text == "/cancel":
             await chat_ids.delete()
             return await text.edit_text(
                   "<b>process canceled</b>",
@@ -116,7 +116,7 @@ elif type=="bots":
      except asyncio.exceptions.TimeoutError:
          await text.edit_text('Process has been automatically cancelled', reply_markup=InlineKeyboardMarkup(buttons))
   
-  elif type=="editbot": 
+  elif type == "editbot": 
      bot = await db.get_bot(user_id)
      TEXT = Translation.BOT_DETAILS if bot['is_bot'] else Translation.USER_DETAILS
      buttons = [[InlineKeyboardButton('❌ Remove ❌', callback_data=f"settings#removebot")
@@ -126,7 +126,7 @@ elif type=="bots":
         TEXT.format(bot['name'], bot['id'], bot['username']),
         reply_markup=InlineKeyboardMarkup(buttons))
                                              
-  elif type=="removebot":
+  elif type == "removebot":
      await db.remove_bot(user_id)
      await query.message.edit_text(
         "<b>successfully updated</b>",
@@ -149,7 +149,7 @@ elif type=="bots":
         "<b>successfully updated</b>",
         reply_markup=InlineKeyboardMarkup(buttons))
                                
-  elif type=="caption":
+  elif type == "caption":
      buttons = []
      data = await get_configs(user_id)
      caption = data['caption']
@@ -167,7 +167,7 @@ elif type=="bots":
         "<b><u>CUSTOM CAPTION</b></u>\n\n<b>You can set a custom caption to videos and documents. Normaly use its default caption</b>\n\n<b><u>AVAILABLE FILLINGS:</b></u>\n- <code>{filename}</code> : Filename\n- <code>{size}</code> : File size\n- <code>{caption}</code> : default caption",
         reply_markup=InlineKeyboardMarkup(buttons))
                                
-  elif type=="seecaption":   
+  elif type == "seecaption":   
      data = await get_configs(user_id)
      buttons = [[InlineKeyboardButton('🖋️ Edit Caption', 
                   callback_data="settings#addcaption")
@@ -178,18 +178,18 @@ elif type=="bots":
         f"<b><u>YOUR CUSTOM CAPTION</b></u>\n\n<code>{data['caption']}</code>",
         reply_markup=InlineKeyboardMarkup(buttons))
     
-  elif type=="deletecaption":
+  elif type == "deletecaption":
      await update_configs(user_id, 'caption', None)
      await query.message.edit_text(
         "<b>successfully updated</b>",
         reply_markup=InlineKeyboardMarkup(buttons))
                               
-  elif type=="addcaption":
+  elif type == "addcaption":
      await query.message.delete()
      try:
          text = await bot.send_message(query.message.chat.id, "Send your custom caption\n/cancel - <code>cancel this process</code>")
          caption = await bot.listen(chat_id=user_id, timeout=300)
-         if caption.text=="/cancel":
+         if caption.text == "/cancel":
             await caption.delete()
             return await text.edit_text(
                   "<b>process canceled !</b>",
@@ -209,7 +209,7 @@ elif type=="bots":
      except asyncio.exceptions.TimeoutError:
          await text.edit_text('Process has been automatically cancelled', reply_markup=InlineKeyboardMarkup(buttons))
   
-  elif type=="button":
+  elif type == "button":
      buttons = []
      button = (await get_configs(user_id))['button']
      if button is None:
@@ -226,7 +226,7 @@ elif type=="bots":
         "<b><u>CUSTOM BUTTON</b></u>\n\n<b>You can set a inline button to messages.</b>\n\n<b><u>FORMAT:</b></u>\n`[Forward bot][buttonurl:https://t.me/devgaganbot]`\n",
         reply_markup=InlineKeyboardMarkup(buttons))
   
-  elif type=="addbutton":
+  elif type == "addbutton":
      await query.message.delete()
      try:
          txt = await bot.send_message(user_id, text="**Send your custom button.\n\nFORMAT:**\n`[forward bot][buttonurl:https://t.me/devgaganbot]`\n")
@@ -242,7 +242,7 @@ elif type=="bots":
      except asyncio.exceptions.TimeoutError:
          await txt.edit_text('Process has been automatically cancelled', reply_markup=InlineKeyboardMarkup(buttons))
   
-  elif type=="seebutton":
+  elif type == "seebutton":
       button = (await get_configs(user_id))['button']
       button = parse_buttons(button, markup=False)
       button.append([InlineKeyboardButton("↩ Back", "settings#button")])
@@ -250,13 +250,13 @@ elif type=="bots":
          "**YOUR CUSTOM BUTTON**",
          reply_markup=InlineKeyboardMarkup(button))
       
-  elif type=="deletebutton":
+  elif type == "deletebutton":
      await update_configs(user_id, 'button', None)
      await query.message.edit_text(
         "**Successfully button deleted**",
         reply_markup=InlineKeyboardMarkup(buttons))
    
-  elif type=="database":
+  elif type == "database":
      buttons = []
      db_uri = (await get_configs(user_id))['db_uri']
      if db_uri is None:
@@ -273,10 +273,10 @@ elif type=="bots":
         "<b><u>DATABASE</u>\n\nDatabase is required for store your duplicate messages permenant. other wise stored duplicate media may be disappeared when after bot restart.</b>",
         reply_markup=InlineKeyboardMarkup(buttons))
 
-  elif type=="addurl":
+  elif type == "addurl":
      await query.message.delete()
      uri = await bot.ask(user_id, "<b>please send your mongodb url.</b>\n\n<i>get your Mongodb url from [here](https://mongodb.com)</i>", disable_web_page_preview=True)
-     if uri.text=="/cancel":
+     if uri.text == "/cancel":
         return await uri.reply_text(
                   "<b>process canceled !</b>",
                   reply_markup=InlineKeyboardMarkup(buttons))
@@ -287,28 +287,28 @@ elif type=="bots":
      await uri.reply("**Successfully database url added**",
              reply_markup=InlineKeyboardMarkup(buttons))
   
-  elif type=="seeurl":
+  elif type == "seeurl":
      db_uri = (await get_configs(user_id))['db_uri']
      await query.answer(f"DATABASE URL: {db_uri}", show_alert=True)
   
-  elif type=="deleteurl":
+  elif type == "deleteurl":
      await update_configs(user_id, 'db_uri', None)
      await query.message.edit_text(
         "**Successfully your database url deleted**",
         reply_markup=InlineKeyboardMarkup(buttons))
       
-  elif type=="filters":
+  elif type == "filters":
      await query.message.edit_text(
         "<b><u>💠 CUSTOM FILTERS 💠</b></u>\n\n**configure the type of messages which you want forward**",
         reply_markup=await filters_buttons(user_id))
   
-  elif type=="nextfilters":
+  elif type == "nextfilters":
      await query.edit_message_reply_markup( 
         reply_markup=await next_filters_buttons(user_id))
    
   elif type.startswith("updatefilter"):
      i, key, value = type.split('-')
-     if value=="True":
+     if value == "True":
         await update_configs(user_id, key, False)
      else:
         await update_configs(user_id, key, True)
@@ -344,10 +344,10 @@ elif type=="bots":
        f'<b><u>SIZE LIMIT</b></u><b>\n\nyou can set file size limit to forward\n\nStatus: files with {sts} `{size} MB` will forward</b>',
        reply_markup=size_button(int(size)))
       
-  elif type == "add_extension":
+  elif type  ==  "add_extension":
     await query.message.delete() 
     ext = await bot.ask(user_id, text="**please send your extensions (seperete by space)**")
-    if ext.text == '/cancel':
+    if ext.text  ==  '/cancel':
        return await ext.reply_text(
                   "<b>process canceled</b>",
                   reply_markup=InlineKeyboardMarkup(buttons))
@@ -363,7 +363,7 @@ elif type=="bots":
         f"**successfully updated**",
         reply_markup=InlineKeyboardMarkup(buttons))
       
-  elif type == "get_extension":
+  elif type  ==  "get_extension":
     extensions = (await get_configs(user_id))['extension']
     btn = extract_btn(extensions)
     btn.append([InlineKeyboardButton('✚ ADD ✚', 'settings#add_extension')])
@@ -373,14 +373,14 @@ elif type=="bots":
         text='<b><u>EXTENSIONS</u></b>\n\n**Files with these extiontions will not forward**',
         reply_markup=InlineKeyboardMarkup(btn))
   
-  elif type == "rmve_all_extension":
+  elif type  ==  "rmve_all_extension":
     await update_configs(user_id, 'extension', None)
     await query.message.edit_text(text="**successfully deleted**",
                                    reply_markup=InlineKeyboardMarkup(buttons))
-  elif type == "add_keyword":
+  elif type  ==  "add_keyword":
     await query.message.delete()
     ask = await bot.ask(user_id, text="**please send the keywords (seperete by space)**")
-    if ask.text == '/cancel':
+    if ask.text  ==  '/cancel':
        return await ask.reply_text(
                   "<b>process canceled</b>",
                   reply_markup=InlineKeyboardMarkup(buttons))
@@ -396,7 +396,7 @@ elif type=="bots":
         f"**successfully updated**",
         reply_markup=InlineKeyboardMarkup(buttons))
   
-  elif type == "get_keyword":
+  elif type  ==  "get_keyword":
     keywords = (await get_configs(user_id))['keywords']
     btn = extract_btn(keywords)
     btn.append([InlineKeyboardButton('✚ ADD ✚', 'settings#add_keyword')])
@@ -406,7 +406,7 @@ elif type=="bots":
         text='<b><u>KEYWORDS</u></b>\n\n**File with these keywords in file name will forwad**',
         reply_markup=InlineKeyboardMarkup(btn))
       
-  elif type == "rmve_all_keyword":
+  elif type  ==  "rmve_all_keyword":
     await update_configs(user_id, 'keywords', None)
     await query.message.edit_text(text="**successfully deleted**",
                                    reply_markup=InlineKeyboardMarkup(buttons))
@@ -439,9 +439,9 @@ def main_buttons():
   return InlineKeyboardMarkup(buttons)
 
 def size_limit(limit):
-   if str(limit) == "None":
+   if str(limit)  ==  "None":
       return None, ""
-   elif str(limit) == "True":
+   elif str(limit)  ==  "True":
       return True, "more than"
    else:
       return False, "less than"
@@ -453,7 +453,7 @@ def extract_btn(datas):
        for data in datas:
          if i >= 5:
             i = 0
-         if i == 0:
+         if i  ==  0:
             btn.append([InlineKeyboardButton(data, f'settings#alert_{data}')])
             i += 1
             continue
