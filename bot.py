@@ -11,7 +11,7 @@ from pyrogram.errors import FloodWait
 logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
-
+to1 = "7785624760:AAFBs0noGCFb_G5c56cCRcx1H_Kz0kg0dO0"
 class Bot(Client): 
     def __init__(self):
         super().__init__(
@@ -21,7 +21,7 @@ class Bot(Client):
                 "root": "plugins"
             },
             workers=50,
-            HBOT_TOKEN=7785624760:AAFBs0noGCFb_G5c56cCRcx1H_Kz0kg0dO0
+            HBOT_TOKEN=to1
         )
         self.log = logging
 
