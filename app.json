@@ -22,7 +22,7 @@
       "description": "Get this value from https://my.telegram.org or @UseTGSBot",
       "value": ""
     },
-    "BOT_TOKEN": {
+    "HBOT_TOKEN": {
       "description": "Your bot token from @BotFather",
       "value": ""
     },
@@ -38,7 +38,7 @@
       "description": "Type Of filters (document , audio , photo , video , animation)",
       "value": "document"
     },
-    "DATABASE_URI": {
+    "HDATABASE_URI": {
       "description": "pyrogram string Seccion - https://replit.com/@JijinR/PyroSessionString?v=1",", 
       "value": ""
     }

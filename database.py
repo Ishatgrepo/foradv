@@ -4,7 +4,7 @@ import motor.motor_asyncio
 from pymongo import MongoClient
 
 async def mongodb_version():
-    x = MongoClient(Config.DATABASE_URI)
+    x = MongoClient(Config.HDATABASE_URI)
     mongodb_version = x.server_info()['version']
     return mongodb_version
 
@@ -191,4 +191,4 @@ class Database:
     async def get_all_frwd(self):
        return self.nfy.find({})
      
-db = Database(Config.DATABASE_URI, Config.DATABASE_NAME)
+db = Database(Config.HDATABASE_URI, Config.DATABASE_NAME)
