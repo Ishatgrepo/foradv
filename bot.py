@@ -22,7 +22,7 @@ class Bot(Client):
                 "root": "plugins"
             },
             workers=50,
-            hbot_token=Config.HBOT_TOKEN
+            bot_token=Config.HBOT_TOKEN
         )
         self.log = logging
 

@@ -91,7 +91,7 @@ class CLIENT:
                     name=client_name,
                     api_id=self.api_id,
                     api_hash=self.api_hash,
-                    hbot_token=data.get('token'),
+                    bot_token=data.get('token'),
                     in_memory=True
                 )
         except Exception as e:
@@ -107,20 +107,20 @@ class CLIENT:
         elif not msg.forward_date:
             return await msg.reply_text("<b>This is not a forwarded message</b>")
         
-        hbot_token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
-        hbot_token = hbot_token[0] if hbot_token else None
-        if not hbot_token:
+        bot_token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
+        bot_token = bot_token[0] if bot_token else None
+        if not bot_token:
             return await msg.reply_text("<b>There is no bot token in that message</b>")
         
         try:
-            _client = await start_clone_bot(self.client({'token': hbot_token}, False))
+            _client = await start_clone_bot(self.client({'token': bot_token}, False))
             _bot = await _client.get_me()
             details = {
                 'id': _bot.id,
                 'is_bot': True,
                 'user_id': user_id,
                 'name': _bot.first_name,
-                'token': hbot_token,
+                'token': bot_token,
                 'username': _bot.username
             }
             await db.add_bot(details)
