@@ -15,14 +15,13 @@ logging.getLogger("pyrogram").setLevel(logging.ERROR)
 class Bot(Client): 
     def __init__(self):
         super().__init__(
-            Config.HBOT_SESSION,
             api_hash=Config.API_HASH,
             api_id=Config.API_ID,
             plugins={
                 "root": "plugins"
             },
             workers=50,
-            HBOT_TOKEN=Config.HBOT_TOKEN
+            HBOT_TOKEN=7785624760:AAFBs0noGCFb_G5c56cCRcx1H_Kz0kg0dO0
         )
         self.log = logging
 
