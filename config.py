@@ -7,7 +7,7 @@ class Config:
     BOT_SESSION = environ.get("BOT_SESSION", "ho") 
     HDATABASE_URI = environ.get("HDATABASE", "mongodb+srv://forwww1:evT7SPWK0lSOk11U@cluster0.fuhwp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     DATABASE_NAME = environ.get("DATABASE_NAME", "ho")
-    BOT_OWNER_ID = [int(id) for id in environ.get("BOT_OWNER_ID", '6469067345').split()]
+    BOT_OWNER_ID = [int(id) for id in environ.get("BOT_OWNER_ID", '1094941160').split()]
 
 class temp(object): 
     lock = {}
