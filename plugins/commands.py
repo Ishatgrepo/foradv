@@ -1,7 +1,7 @@
 import os
 import sys
 import asyncio 
-from database import db, mongodb_version
+from hdatabase import db, mongodb_version
 from config import Config, temp
 from platform import python_version
 from translation import Translation

@@ -4,7 +4,7 @@ import sys
 import typing
 import asyncio
 import logging
-from database import db
+from hdatabase import db
 from config import Config, temp
 from pyrogram import Client, filters
 from pyrogram.raw.all import layer
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 BTN_URL_REGEX = re.compile(r"(\[([^\[]+?)]\[buttonurl:/{0,2}(.+?)(:same)?])")
-BOT_TOKEN_TEXT = "<b>1) Create a bot using @BotFather\n2) Then you will get a message with bot token\n3) Forward that message to me</b>"
+HBOT_TOKEN_TEXT = "<b>1) Create a bot using @BotFather\n2) Then you will get a message with bot token\n3) Forward that message to me</b>"
 SESSION_STRING_SIZE = 351
 
 async def start_clone_bot(FwdBot, data=None):
@@ -63,7 +63,7 @@ class CLIENT:
         """Initialize a Pyrogram Client with a unique name for a bot or userbot."""
         try:
             if user is None and data.get('is_bot') is False:
-                # Userbot from database (forwarding task)
+                # Userbot from hdatabase (forwarding task)
                 client_name = f"userbot_{data['id']}"
                 logger.info(f"Initializing userbot: {client_name}")
                 return Client(
@@ -83,7 +83,7 @@ class CLIENT:
                     session_string=data
                 )
             else:
-                # Bot with token (from database or adding bot)
+                # Bot with token (from hdatabase or adding bot)
                 bot_id = data.get('id', 'temp')  # Use 'temp' if ID not yet available
                 client_name = f"bot_{bot_id}"
                 logger.info(f"Initializing bot: {client_name}")
@@ -91,7 +91,7 @@ class CLIENT:
                     name=client_name,
                     api_id=self.api_id,
                     api_hash=self.api_hash,
-                    bot_token=data.get('token'),
+                    HBOT_TOKEN=data.get('token'),
                     in_memory=True
                 )
         except Exception as e:
@@ -101,26 +101,26 @@ class CLIENT:
     async def add_bot(self, bot, message):
         """Add a bot by parsing a forwarded token from @BotFather."""
         user_id = int(message.from_user.id)
-        msg = await bot.ask(chat_id=user_id, text=BOT_TOKEN_TEXT)
+        msg = await bot.ask(chat_id=user_id, text=HBOT_TOKEN_TEXT)
         if msg.text == '/cancel':
             return await msg.reply('<b>Process cancelled!</b>')
         elif not msg.forward_date:
             return await msg.reply_text("<b>This is not a forwarded message</b>")
         
-        bot_token = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
-        bot_token = bot_token[0] if bot_token else None
-        if not bot_token:
+        HBOT_TOKEN = re.findall(r'\d[0-9]{8,10}:[0-9A-Za-z_-]{35}', msg.text, re.IGNORECASE)
+        HBOT_TOKEN = HBOT_TOKEN[0] if HBOT_TOKEN else None
+        if not HBOT_TOKEN:
             return await msg.reply_text("<b>There is no bot token in that message</b>")
         
         try:
-            _client = await start_clone_bot(self.client({'token': bot_token}, False))
+            _client = await start_clone_bot(self.client({'token': HBOT_TOKEN}, False))
             _bot = await _client.get_me()
             details = {
                 'id': _bot.id,
                 'is_bot': True,
                 'user_id': user_id,
                 'name': _bot.first_name,
-                'token': bot_token,
+                'token': HBOT_TOKEN,
                 'username': _bot.username
             }
             await db.add_bot(details)

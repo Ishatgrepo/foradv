@@ -1,5 +1,5 @@
 import re, asyncio
-from database import db
+from hdatabase import db
 from config import temp
 from .test import CLIENT , start_clone_bot
 from translation import Translation

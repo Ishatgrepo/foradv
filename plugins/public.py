@@ -1,7 +1,7 @@
 import re
 import asyncio 
 from .utils import STS
-from database import db
+from hdatabase import db
 from config import temp 
 from translation import Translation
 from pyrogram import Client, filters, enums

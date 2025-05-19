@@ -1,7 +1,7 @@
 import asyncio
 import logging 
 import logging.config
-from database import db 
+from hdatabase import db 
 from config import Config  
 from pyrogram import Client, __version__
 from pyrogram.raw.all import layer 
@@ -15,14 +15,14 @@ logging.getLogger("pyrogram").setLevel(logging.ERROR)
 class Bot(Client): 
     def __init__(self):
         super().__init__(
-            Config.BOT_SESSION,
+            Config.HBOT_SESSION,
             api_hash=Config.API_HASH,
             api_id=Config.API_ID,
             plugins={
                 "root": "plugins"
             },
             workers=50,
-            bot_token=Config.BOT_TOKEN
+            HBOT_TOKEN=Config.HBOT_TOKEN
         )
         self.log = logging
 

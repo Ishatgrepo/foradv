@@ -5,7 +5,7 @@ import time
 import asyncio 
 import logging
 from .utils import STS
-from database import db 
+from hdatabase import db 
 from .test import CLIENT , start_clone_bot
 from config import Config, temp
 from translation import Translation

@@ -1,5 +1,5 @@
 import asyncio 
-from database import db
+from hdatabase import db
 from translation import Translation
 from pyrogram import Client, filters
 from .test import get_configs, update_configs, CLIENT, parse_buttons
@@ -255,7 +255,7 @@ async def settings_query(bot, query):
             "**Successfully button deleted**",
             reply_markup=InlineKeyboardMarkup(buttons))
    
-    elif type == "database":
+    elif type == "hdatabase":
         buttons = []
         db_uri = (await get_configs(user_id))['db_uri']
         if db_uri is None:
@@ -269,7 +269,7 @@ async def settings_query(bot, query):
         buttons.append([InlineKeyboardButton('↩ Back', 
                         callback_data="settings#main")])
         await query.message.edit_text(
-            "<b><u>DATABASE</u>\n\nDatabase is required for store your duplicate messages permenant. other wise stored duplicate media may be disappeared when after bot restart.</b>",
+            "<b><u>HDATABASE</u>\n\nDatabase is required for store your duplicate messages permenant. other wise stored duplicate media may be disappeared when after bot restart.</b>",
             reply_markup=InlineKeyboardMarkup(buttons))
 
     elif type == "addurl":
@@ -283,17 +283,17 @@ async def settings_query(bot, query):
             return await uri.reply("<b>Invalid Mongodb Url</b>",
                     reply_markup=InlineKeyboardMarkup(buttons))
         await update_configs(user_id, 'db_uri', uri.text)
-        await uri.reply("**Successfully database url added**",
+        await uri.reply("**Successfully hdatabase url added**",
                 reply_markup=InlineKeyboardMarkup(buttons))
   
     elif type == "seeurl":
         db_uri = (await get_configs(user_id))['db_uri']
-        await query.answer(f"DATABASE URL: {db_uri}", show_alert=True)
+        await query.answer(f"HDATABASE URL: {db_uri}", show_alert=True)
   
     elif type == "deleteurl":
         await update_configs(user_id, 'db_uri', None)
         await query.message.edit_text(
-            "**Successfully your database url deleted**",
+            "**Successfully your hdatabase url deleted**",
             reply_markup=InlineKeyboardMarkup(buttons))
       
     elif type == "filters":
@@ -425,7 +425,7 @@ def main_buttons():
         InlineKeyboardButton('🖋️ Cᴀᴘᴛɪᴏɴ',
                     callback_data=f'settings#caption'),
         InlineKeyboardButton('🗃 MᴏɴɢᴏDB',
-                    callback_data=f'settings#database')
+                    callback_data=f'settings#hdatabase')
         ],[
         InlineKeyboardButton('🕵‍♀ Fɪʟᴛᴇʀs 🕵‍♀',
                     callback_data=f'settings#filters'),
